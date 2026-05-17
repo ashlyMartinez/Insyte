@@ -75,6 +75,7 @@ export default function ReportPage(){
 
     console.log("AppData in ReportPage:", appData);
     console.log(`Reviews in ReportPage:`, reviews);
+    console.log("Rendering DummyGraphs with trackId:", appData?.trackId);
 
     return (
         <div className={styles.reportPage}>
@@ -114,7 +115,7 @@ export default function ReportPage(){
                 {/* Dynamic Content Area */}
                 <main className={styles.contentArea}>
                     {activeTab === 'overview' && <AppAnalytics app={appData} />}
-                    {activeTab === 'analytics' && <DummyGraphs />}
+                    {activeTab === 'analytics' && <DummyGraphs trackId={appData.trackId}/>}
                     {activeTab === 'reviews' && <AppReviews appReviews={reviews} />}
                 </main>
                 

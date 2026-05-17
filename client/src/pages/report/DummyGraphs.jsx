@@ -3,23 +3,51 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { BarChart, LineChart } from '@mui/x-charts';
 import styles from './Graphs.module.css';
 
-// --- ecobee Dummy Data ---
-const dataset = [
-  { week: 'Wk 1', reviews: 145, threshold: 310, movingAvg: 4.6, overallAvg: 4.5 },
-  { week: 'Wk 2', reviews: 130, threshold: 310, movingAvg: 4.5, overallAvg: 4.5 },
-  { week: 'Wk 3', reviews: 160, threshold: 310, movingAvg: 4.7, overallAvg: 4.5 },
-  { week: 'Wk 4', reviews: 140, threshold: 310, movingAvg: 4.6, overallAvg: 4.5 },
-  { week: 'Wk 5', reviews: 185, threshold: 310, movingAvg: 4.4, overallAvg: 4.5 },
-  { week: 'Wk 6', reviews: 150, threshold: 310, movingAvg: 4.5, overallAvg: 4.5 },
-  { week: 'Wk 7', reviews: 420, threshold: 310, movingAvg: 2.8, overallAvg: 4.5 }, // Viral Spike
-  { week: 'Wk 8', reviews: 290, threshold: 310, movingAvg: 3.5, overallAvg: 4.5 },
-  { week: 'Wk 9', reviews: 210, threshold: 310, movingAvg: 4.2, overallAvg: 4.5 },
-  { week: 'Wk 10', reviews: 175, threshold: 310, movingAvg: 4.6, overallAvg: 4.5 },
-  { week: 'Wk 11', reviews: 160, threshold: 310, movingAvg: 4.7, overallAvg: 4.5 },
-  { week: 'Wk 12', reviews: 155, threshold: 310, movingAvg: 4.8, overallAvg: 4.5 },
-];
+// added below imports for analytics data fetching
+import { useState, useEffect } from 'react';
+import {fetchAnalyticsData} from '../../api/reviewAnalystics.js';
+import { CircularProgress, Alert } from '@mui/material';
+import { data } from 'react-router-dom';
 
-const EcobeeAnalysisPage = () => {
+function DummyGraphs({trackId}){
+  
+  const [dataset, setDataset] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 2. The Async Fetch Function inside useEffect
+  useEffect(() => {
+    const loadAnalytics = async () => {
+      setIsLoading(true); // Start loading spinner
+      setError(null); // Clear previous errors
+      try {
+        const data = await fetchAnalyticsData(trackId); // Call the function that fetches data from Django
+        setDataset(data); // Update state with the fetched data
+      } catch (err) {
+        console.error("Error loading analytics:", err);
+        setError("Failed to load analytics data.");
+      } finally {
+        setIsLoading(false); // Stop loading spinner
+      }
+    };
+
+    loadAnalytics(); 
+
+  }, [trackId]); 
+
+  if (isLoading) {
+    return (
+      <div className={styles.graphBox} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '350px' }}>
+        <CircularProgress /> {/* Professional loading spinner */}
+      </div>
+    );
+  }
+
+  if (error) {
+    return <Alert severity="error">{error}</Alert>;
+  }
+  console.log("Dataset for Graphs:", typeof dataset[0].threshold === 'number', dataset);
+
   return (
     <Container className={styles.graphsContainer}>
       <Row className="g-4">
@@ -29,7 +57,7 @@ const EcobeeAnalysisPage = () => {
           
           <div className={styles.graphBox}>
             <div className={styles.graphInformation}>
-              <h4>BREAKOUT VELOCITY (REVIEWS)</h4>
+              <h4>{dataset[0]?.isDaily ? "DAILY MOMENTUM" : "BREAKOUT VELOCITY (WEEKLY)"}</h4>
               <div className={styles.graphImage}>
                 <BarChart
                   dataset={dataset}
@@ -39,19 +67,27 @@ const EcobeeAnalysisPage = () => {
                     { 
                       type: 'line', 
                       dataKey: 'threshold', 
+                      connectNulls: true,
                       label: 'Viral Threshold', 
                       color: '#ef4444', 
-                      showMark: false 
+                      yAxisId: 'reviewAxis',
+                      showMark: true, 
+                      highlightScope: { faded: 'global', highlighted: 'item' },
+                    valueFormatter: (value) => `${value} reviews`,
+                      // Add this to make bars semi-transparent
+                      
                     }
+                    
                   ]}
                   height={350}
                   sx={{
-                    '& .MuiLineElement-root': { strokeDasharray: '5 5', strokeWidth: 2 }
+                    '& .MuiLineElement-root': { strokeDasharray: '5 5', strokeWidth: 2, opacity: 0.8 }
                   }}
                 />
               </div>
             </div>
           </div>
+
         </Col>
 
         {/* --- RATINGS GRAPH --- */}
@@ -96,4 +132,4 @@ const EcobeeAnalysisPage = () => {
   );
 };
 
-export default EcobeeAnalysisPage;
+export default DummyGraphs;

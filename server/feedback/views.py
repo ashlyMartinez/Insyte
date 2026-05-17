@@ -3,6 +3,15 @@ from django.http import JsonResponse
 from django.views import View
 from django.core.cache import cache
 from .models import App, Review
+
+#Review Analystics Imports 
+import math
+import statistics
+from datetime import timedelta
+from django.utils import timezone
+from django.db.models import Avg
+from django.utils.dateparse import parse_datetime
+
 # Fetch app names
 class SearchAppView(View):
     """
@@ -108,25 +117,25 @@ class FetchReviewsView(View):
             return JsonResponse({**cached, "cached": True})
 
         # Try multiple sort orders and pages
-        sort_orders = ["mostrecent", "mosthelpful"]
-        reviews = []
-        # Two nested loops, outer tries different sort orders, inner tries pages 1, 2, and 3
+        # sort_orders = ["mostrecent", "mosthelpful"] Original 
+
+        reviews = [] # Change the name to keep track of everything
+        sort_orders = ["mostrecent"] # You only really need mostrecent for a time-series graph
+
         for sort in sort_orders:
-            for pg in range(1, 4):  # try pages 1, 2, 3
-                url = (
-                    f"https://itunes.apple.com/rss/customerreviews/"
-                    f"page={pg}/id={track_id}/sortby={sort}/json"
-                )
+            for pg in range(1, 11): # Loop through all 10 pages
+                url = f"https://itunes.apple.com/rss/customerreviews/page={pg}/id={track_id}/sortby={sort}/json"
                 try:
                     response = requests.get(url, headers=self.HEADERS, timeout=10)
                     response.raise_for_status()
                     data = response.json()
                     entries = data.get("feed", {}).get("entry", [])
-                    review_entries = entries[1:] if len(entries) > 1 else []
-                    if review_entries:
-                        # Parse each review and drills down to actual value, iTunes wraps every value
-                        reviews = [
-                            {
+                    
+                    if len(entries) > 1:
+                        review_entries = entries[1:] 
+                        for entry in review_entries:
+                            # Append each individual review to our master list
+                            reviews.append({
                                 "id": entry.get("id", {}).get("label"),
                                 "title": entry.get("title", {}).get("label"),
                                 "content": entry.get("content", {}).get("label"),
@@ -134,14 +143,12 @@ class FetchReviewsView(View):
                                 "author": entry.get("author", {}).get("name", {}).get("label"),
                                 "date": entry.get("updated", {}).get("label"),
                                 "version": entry.get("im:version", {}).get("label"),
-                            }
-                            for entry in review_entries
-                        ]
-                        break
+                            })
+                    else:
+                        # If a page comes back empty, we've reached the end of the available reviews
+                        break 
                 except requests.RequestException:
-                    continue
-            if reviews:
-                break
+                    break # Skip to next sort or finish if Apple blocks a page
         # Computes average rating
         ratings = [int(r["rating"]) for r in reviews if r.get("rating", "").isdigit()]
         avg_rating = round(sum(ratings) / len(ratings), 2) if ratings else None
@@ -161,6 +168,7 @@ class FetchReviewsView(View):
         try: 
             app = App.objects.get(track_id=track_id)
             for r in reviews:
+                
                 Review.objects.get_or_create(
                     review_id=r["id"],
                     defaults={
@@ -169,9 +177,100 @@ class FetchReviewsView(View):
                         "content": r["content"],
                         "rating": r["rating"],
                         "version": r["version"],
+                        "date": parse_datetime(r["date"]),
                     }
                 )
         except App.DoesNotExist:
             pass
 
         return JsonResponse({**payload, "cached": False})
+    
+
+class AnalyticsView(View):
+    """
+    GET /api/analytics/?trackId=<id>
+    Calculates Breakout Velocity and Version Fragility over a 12-week period.
+    """
+    def get(self, request):
+        track_id = request.GET.get("trackId", "").strip()
+        if not track_id:
+            return JsonResponse({"error": "Missing 'trackId' parameter"}, status=400)
+
+        # 1. Fetch data and determine the time range
+        app_reviews_all_time = Review.objects.filter(app__track_id=track_id)
+        if not app_reviews_all_time.exists():
+            return JsonResponse({"error": "No reviews found"}, status=404)
+
+        latest_review = app_reviews_all_time.latest('date')
+        oldest_review = app_reviews_all_time.earliest('date')
+        
+        # Calculate total spread of our data in days
+        total_days_spread = (latest_review.date - oldest_review.date).days
+        
+        # 2. DATA SCIENCE LOGIC: Auto-switch granularity
+        # If data covers less than 3 weeks, show Daily. Otherwise, show Weekly.
+        if total_days_spread < 21:
+            granularity = 1
+            label_prefix = "Day"
+            window_days = 12 # Look back 12 days
+        else:
+            granularity = 7
+            label_prefix = "Wk"
+            window_days = 84 # Look back 12 weeks (84 days)
+
+        end_date = latest_review.date 
+        start_date = end_date - timedelta(days=window_days)
+
+        # 3. Setup Baseline Metrics
+        overall_avg = app_reviews_all_time.aggregate(Avg('rating'))['rating__avg'] or 0.0
+        overall_avg = round(float(overall_avg), 2)
+        
+        recent_reviews = app_reviews_all_time.filter(date__gte=start_date)
+
+        # 4. Create Dynamic Buckets
+        buckets = []
+        for i in range(12):
+            buckets.append({
+                "label": f"{label_prefix} {i+1}",
+                "count": 0,
+                "ratings": []
+            })
+
+        # 5. Sort reviews into the dynamic buckets
+        for review in recent_reviews:
+            days_old = (end_date - review.date).days
+            
+            # Use 'granularity' (1 or 7) to determine which bucket it hits
+            index_ago = days_old // granularity
+            bucket_index = 11 - index_ago 
+            
+            if 0 <= bucket_index <= 11:
+                buckets[bucket_index]["count"] += 1
+                try:
+                    buckets[bucket_index]["ratings"].append(float(review.rating))
+                except: pass
+
+        # 6. Final Calculations (Z-Score & Fragility)
+        weekly_counts = [b["count"] for b in buckets]
+        mean_reviews = statistics.mean(weekly_counts)
+        std_dev = statistics.stdev(weekly_counts) if len(weekly_counts) > 1 else 0
+        viral_threshold = mean_reviews + (2 * std_dev)
+
+        formatted_data = []
+        for b in buckets:
+            moving_avg = statistics.mean(b["ratings"]) if b["ratings"] else overall_avg
+            
+            # Flag Fragility: Viral spike but quality drops significantly
+            is_fragile = b["count"] > viral_threshold and moving_avg < (overall_avg - 0.5)
+
+            formatted_data.append({
+                "week": b["label"], # We keep the key 'week' so your frontend code doesn't break
+                "reviews": b["count"],
+                "threshold": round(viral_threshold, 1),
+                "movingAvg": round(moving_avg, 2),
+                "overallAvg": overall_avg,
+                "versionFragility": is_fragile,
+                "isDaily": total_days_spread < 21 # Tell frontend if this is a daily or weekly view
+            })
+
+        return JsonResponse({"data": formatted_data})
