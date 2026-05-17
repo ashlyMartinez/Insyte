@@ -115,7 +115,11 @@ export default function ReportPage(){
                 {/* Dynamic Content Area */}
                 <main className={styles.contentArea}>
                     {activeTab === 'overview' && <AppAnalytics app={appData} />}
+<<<<<<< Updated upstream
                     {activeTab === 'analytics' && <DummyGraphs trackId={appData.trackId}/>}
+=======
+                    {activeTab === 'analytics' && <DummyGraphs />}
+>>>>>>> Stashed changes
                     {activeTab === 'reviews' && <AppReviews appReviews={reviews} />}
                 </main>
                 

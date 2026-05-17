@@ -2,8 +2,12 @@
   max-width: 100%;
   max-height: fit-content;
   animation: fade-in 3s;
+<<<<<<< Updated upstream
   font-family: 'Inter', system-ui, sans-serif; /* Matches Report Page */
   animation: fade-in 1.5s ease; /* Sped up slightly for a snappier feel */
+=======
+
+>>>>>>> Stashed changes
 }
 
 .PageTitle {
