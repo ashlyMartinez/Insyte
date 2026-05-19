@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Accordion from 'react-bootstrap/Accordion';
 
 
-export default function AppDetailBasics({ app, onCompareClick }) {
+export default function AppDetailBasics({ app, onCompareClick,  onSave, isSaved, saving  }) {
   const navigate = useNavigate();
   const { 
         appName, developerName, iconUrl, genre, 
@@ -46,6 +46,12 @@ export default function AppDetailBasics({ app, onCompareClick }) {
               <span className={styles.developerSub}>{developerName}</span>
             </div>
           </div>
+
+          <button
+                      className={`${styles.saveButton} ${isSaved ? styles.saveButtonActive : ''}`}
+                      onClick={onSave}
+                      disabled={saving || isSaved}
+                    ></button>
             
           <button className={styles.compareBtn} onClick={onCompareClick}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

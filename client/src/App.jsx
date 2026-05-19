@@ -13,7 +13,9 @@ import SearchPage from './pages/search/SearchPage.jsx';
 import ReportPage from './pages/report/ReportPage.jsx';
 import ListPage from './pages/list/ListPage.jsx';
 import Layout from "./pages/Layout.jsx";
+
 import ComparePage from './pages/compare/ComparePage.jsx'
+
 // Create router with JSX Route elements 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -21,7 +23,9 @@ const appRouter = createBrowserRouter(
       <Route index element={<SearchPage />} />
       <Route path="report/:appId/:name" element={<ReportPage />} />
       <Route path="list" element={<ListPage />} />
+
       <Route path="compare" element = {<ComparePage />} />
+
     </Route>
   )
 );

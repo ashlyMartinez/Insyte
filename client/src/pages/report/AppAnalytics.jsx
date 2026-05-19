@@ -69,7 +69,7 @@ export const AppAnalytics = ({app}) => {
                     </span>
                 </div>
 
-                ))}
+                ))} 
             </div>
           </div>
         </Col>

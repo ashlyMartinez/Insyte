@@ -78,6 +78,30 @@
     cursor: pointer;
 }
 
+.saveButton {
+  width: 120px;
+  height: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+  color: #111827;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.saveButtonActive {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
 /* --- THE INFO BAR --- */
 
 .infoBar {
