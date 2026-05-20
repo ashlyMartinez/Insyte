@@ -3,13 +3,19 @@ import { Modal, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import styles from './CompareModal.module.css';
 
-const CompareModal = ({ show, onHide, currentApp, savedApps }) => {
+
+const CompareModal = ({ show, onHide, currentApp, savedApps}) => {
   const navigate = useNavigate();
-  
+
+
+
+  console.log("Saved apps in compare modal", savedApps)
+
+
   const handleSelection = (targetApp) => {
 
     // Navigate to the compare route with both IDs in the URL
-    navigate(`/compare?app1=${currentApp.trackId}&app2=${targetApp.appId}`, { 
+    navigate(`/compare?app1=${currentApp.trackId}&app2=${targetApp.trackId}`, { 
       state: { 
           app1Data: currentApp, 
           app2Data: targetApp 

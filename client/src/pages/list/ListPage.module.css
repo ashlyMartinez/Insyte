@@ -3,7 +3,7 @@
     margin: 0 auto;
     padding: 60px 80px;
     animation: fade-in 1s ease;
-    background-color: #f1f1f1;
+    
     min-height: 100vh;
 }
 
@@ -34,7 +34,7 @@
     background-color: #5188ff;
     color: #fff;
     border: 2px solid #5188ff;
-    border-radius: 999px;
+    border-radius: 1.5rem;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;

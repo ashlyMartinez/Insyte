@@ -109,13 +109,9 @@
     color: #1a1a1a;
 }
 
-.winner {
-    color: #10b981; /* Green for better metric */
-}
 
-.warning {
-    color: #ef4444; /* Red for churn risk */
-}
+
+
 
 .featureGapBox {
     background: #fff;

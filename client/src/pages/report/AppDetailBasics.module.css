@@ -32,75 +32,116 @@
 }
 
 /* --- Basic App Info --- */
+
+
 .mainHeader {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 2rem;
 }
 
+
 .appIdentity {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* 1*/
 }
+
 
 .appIcon {
-    width: 100px;
-    height: 100px;
-    border-radius: 22%; /* App Store Standard */
-    border: 1px solid #e5e7eb;
+  width: 100px;
+  height: 100px;
+  border-radius: 1rem;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+
 .appTitleGroup h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0;
-    color: #111827;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
 }
 
 .developerSub {
-    color: #5188ff; /* Professional Link Blue */
-    font-weight: 500;
-    font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6c757d;
 }
 
-.compareBtn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #000;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
+/* Button Layout Container */
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
+
+
+
+.saveButton, .compareBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size:   1rem;
+  font-weight: 550;
+  height: 3.25rem;
+  padding: 0 1.25rem;
+  border-radius: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 
 .saveButton {
-  width: 120px;
-  height: 40px;
-  margin-left: 10px;
-  margin-right: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  background: white;
-  color: #111827;
-  border: 1px solid #d1d5db;
-  border-radius: 5px;
-  font-size: 14px;
-  font-weight: 650;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  color: #1a1a1a;
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.saveButtonActive {
-  background: #2563eb;
-  color: white;
-  border-color: #2563eb;
+.saveButton:hover:not(:disabled) {
+    border-color: rgba(0, 81, 255);
+    color: rgba(0, 81, 255, .98);
+    transform: translateY(-1px);
 }
+
+/* State: When the app is successfully saved */
+.saveButtonActive {
+    background: rgba(0, 81, 255, 0.12);
+    color: #0044d6;
+    border-color: rgba(0, 0, 0, 0.15);
+    cursor: default;
+}
+
+/* Style 2: The Compare Button (Primary Call To Action) */
+.compareBtn {
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #1a1a1a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.compareBtn:hover {
+  background: #000000;
+  border-color: #000000;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.14);
+}
+
+.compareBtn:active {
+  transform: translateY(0);
+}
+
+/* Universal Disabled State handling (e.g., during network save calls) */
+.saveButton:disabled, .compareBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
 /* --- THE INFO BAR --- */
 

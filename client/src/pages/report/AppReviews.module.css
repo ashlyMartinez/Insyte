@@ -1,104 +1,123 @@
+/* Layout Container */
 .appReviewSection {
-  width: 100%;
+  min-height: 50vh;
+  padding-top: .5rem;
+}
+.sectionHeader{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.sectionHeader{
-  margin-bottom: 1.5rem;
-  display:flex;
-  align-items: center;
-  flex-direction: column;
-}
 .sectionHeader h1{
-  font-size: 1.75rem;
+    font-size: 1.75rem;
   font-weight: 600;
   color: #111827;
 }
 
-.reviewContainer {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
-}
 
-.reviewCards {
-  display: flex;
+
+.reviewGrid {
+  display: grid;
+  /* Automatically makes 2 columns on desktop, 1 column on mobile */
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); 
   gap: 1.5rem;
-  overflow: hidden; 
-  width: 100%;
+
 }
 
+/* Card Styling (Translucent Depth Theme) */
 .reviewCard {
-  background: rgba(255, 254, 254, 0.95); 
-  border: 1px solid rgba(29, 29, 29, 0.05);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
-  /* Responsive width logic */
-  /* 3 cards on desktop */
-  flex: 0 0 calc(33.333% - 1rem); 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reviewCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.cardHeader {
   display: flex;
-  flex-direction: column;
-  min-height: 200px;
-}
-
-.reviewCard h4{
-  font-size: 1.15rem;
-  font-weight: 600;
-}
-
-.reviewText {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: #4b5563;
-  margin: 1rem 0;
-  flex-grow: 1; /* Pushes the reviewer name to the bottom */
-}
-
-/* Tablet: Show 2 cards */
-@media (max-width: 1024px) {
-    .reviewCard {
-        flex: 0 0 calc(50% - 0.75rem);
-    }
-}
-
-/* Mobile: Show 1 card */
-@media (max-width: 640px) {
-    .reviewCard {
-        flex: 0 0 100%;
-    }
-    .arrowButton {
-        display: none; /* Often better to use swipe or dots on mobile */
-    }
-}
-
-.arrowButton {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: all 0.2s;
-  font-size: 1.5rem;
-  z-index: 10;
+  margin-bottom: 0.75rem;
 }
 
-.arrowButton:hover {
-  background: #f9fafb;
-  border: 1px solid rgb(#4facfe);
-  
+.reviewerName {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.priorityBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(0, 81, 255, 0.1);
+  color: #0051FF; /* Your Fintech Blue */
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 81, 255, 0.2);
+}
+
+.reviewCard h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0.5rem 0;
+  line-height: 1.3;
+}
+
+.starRating {
+  margin-bottom: 1rem;
 }
 
 .starFilled {
-    color: #FFD700; /* Gold */
+  color: #F59E0B; 
+  font-size: 1.1rem;
 }
 
 .starEmpty {
-    color: #E5E7EB; /* Light Gray - often the same color as your dividers */
+  color: #E5E7EB; 
+  font-size: 1.1rem;
+}
+
+.reviewText {
+  color: #495057;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Load More Button Styling */
+.loadMoreContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.loadMoreBtn {
+  background: transparent;
+  color: #0051FF;
+  border: 1px solid #0051FF;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.loadMoreBtn:hover {
+  background: rgba(0, 81, 255, 0.05);
+  transform: translateY(-1px);
 }

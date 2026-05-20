@@ -2,13 +2,9 @@ from django.urls import path
 
 from .views import SearchAppView, FetchReviewsView, AnalyticsView, AppsListView
 
-
-
 urlpatterns = [
     path("search/", SearchAppView.as_view(), name="search-app"),
     path("apps/", AppsListView.as_view(), name="apps-list"),
     path("reviews/", FetchReviewsView.as_view(), name="fetch-reviews"),
-    
-    # NEW route
-    path('analytics/', AnalyticsView.as_view(), name='app_analytics'),
+    path('analytics/', AnalyticsView.as_view(), name='app-analytics'),
 ]

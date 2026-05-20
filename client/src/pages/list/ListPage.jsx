@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getTrackedApps } from '../../api/searchApps.js'
 import styles from './ListPage.module.css'
+import { savedApps } from '../report/DummyData.js'
 
 const ListPage = () => {
     const navigate = useNavigate()
@@ -43,8 +44,11 @@ const ListPage = () => {
             return
         }
 
+        
+        const currentApps = apps.filter(trackedApp => String(trackedApp.trackId) !== String(app.trackId));
+        console.log("-------------Current apps in list page", app)
         navigate(`/report/${app.trackId}/${encodeURIComponent(app.appName)}`, {
-            state: { appData: app },
+            state: { appData: app, savedApps: currentApps},
         })
     }
 
@@ -57,7 +61,7 @@ const ListPage = () => {
         <div className={styles.listPage}>
             <div className={styles.headerRow}>
                 <div>
-                    <h1>Tracked Apps</h1>
+                    <h1>Saved Apps</h1>
                     <p>Click any app card to view detailed analytics and insights</p>
                 </div>
 

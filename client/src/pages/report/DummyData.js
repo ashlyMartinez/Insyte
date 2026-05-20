@@ -297,15 +297,33 @@ export let savedApps =
 ]
 
 export const positiveInsights = [
-    { label: 'UI/UX', text: 'Highly intuitive navigation flow optimized for React-Vite.' },
-    { label: 'Runtime', text: 'Efficient memory allocation during large dataset renders.' },
-    { label: 'Aesthetic', text: 'Glassmorphism implementation adds professional depth.' }
+    {
+      "label": "UTILITY",
+      "text": "High desktop workflow and drawing efficiency."
+    },
+    {
+      "label": "RETENTION",
+      "text": "Exceptional long-term daily user retention."
+    },
+    {
+      "label": "NAVIGATION",
+      "text": "Improved visual polish and back routing."
+    }
   ];
 
 export const negativeInsights = [
-    { label: 'Latency', text: 'Potential fetch delays identified in the backend migrations.' },
-    { label: 'Memory', text: 'High overhead detected when scaling complex data structures.' },
-    { label: 'DevOps', text: 'Unused dependencies found in the current Vite skeleton.' }
+    {
+      "label": "DECLINE",
+      "text": "iPad bug breaks single-finger text selection."
+    },
+    {
+      "label": "PARITY",
+      "text": "Mobile lacks basic desktop feature parity."
+    },
+    {
+      "label": "INTERFACE",
+      "text": "Mobile UI overlaps obscure drawing tools."
+    }
   ];
 
 export default appData;

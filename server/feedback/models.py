@@ -11,6 +11,13 @@ class App(models.Model):
     rating_count = models.IntegerField(blank=True, null=True)
     tracked = models.BooleanField(default=False)
     last_fetched = models.DateTimeField(auto_now=True)
+    current_version_rating = models.FloatField(default=0.0)
+    current_version_rating_count = models.IntegerField(default=0)
+    initial_release_date = models.DateTimeField(null=True, blank=True)
+    current_version_release_date = models.DateTimeField(null=True, blank=True)
+    content_advisory_rating = models.CharField(max_length=50, blank=True)
+    version = models.CharField(max_length=50, blank=True)
+    description = models.TextField(blank=True)
     
     def __str__(self):
         return self.app_name

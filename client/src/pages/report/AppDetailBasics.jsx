@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import Accordion from 'react-bootstrap/Accordion';
 
 
-export default function AppDetailBasics({ app, onCompareClick,  onSave, isSaved, saving  }) {
+export default function AppDetailBasics({ app, onCompareClick, onSave, isSaved, saving  }) {
   const navigate = useNavigate();
   const { 
         appName, developerName, iconUrl, genre, 
         averageRating, ratingCount, contentAdvisoryRating,
-        version 
+        version, currentVersionRating, currentVersionRatingCount, 
+        initialReleaseDate, currentVersionReleaseDate, description
     } = app;
 
   const iconStyle = {
@@ -16,7 +17,14 @@ export default function AppDetailBasics({ app, onCompareClick,  onSave, isSaved,
     backgroundColor: '#e1e4e8'
   };
 
-  const formatNum = (n) => n >= 1000000 ? (n/1000000).toFixed(1) + 'M' : (n/1000).toFixed(0) + 'K';
+  const formatNum = (n) => {
+    // Formatting numbers into K/M 
+    if (n === undefined || n === null || isNaN(n)) return ''; 
+  
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+    return n.toString(); 
+  };
   
   const handleReturn = () =>{
     navigate(`/`)
@@ -37,8 +45,8 @@ export default function AppDetailBasics({ app, onCompareClick,  onSave, isSaved,
       <div className={styles.appDetails}>
 
         {/* Main Header - App logo and compare button */}
+       
         <header className={styles.mainHeader}>
-          
           <div className={styles.appIdentity}>
             <img src={iconUrl} alt={appName} className={styles.appIcon} />
             <div className={styles.appTitleGroup}>
@@ -47,18 +55,38 @@ export default function AppDetailBasics({ app, onCompareClick,  onSave, isSaved,
             </div>
           </div>
 
-          <button
-                      className={`${styles.saveButton} ${isSaved ? styles.saveButtonActive : ''}`}
-                      onClick={onSave}
-                      disabled={saving || isSaved}
-                    ></button>
+          {/* Button Group pushed cleanly to the right side via auto margin */}
+          <div className={styles.buttonGroup}>
+            <button
+
+              className={`${styles.saveButton} ${isSaved ? styles.saveButtonActive : ''}`}
+
+              onClick={onSave}
+
+              disabled={saving || isSaved}
+
+              >
+
+              <svg width="14" height="14" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
+
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+
+              </svg>
+
+              {saving ? 'Saving...' : isSaved ? 'Saved' : 'Save App'}
+
+
+            </button> 
+
+
             
-          <button className={styles.compareBtn} onClick={onCompareClick}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            Compare
-          </button>
+            <button className={styles.compareBtn} onClick={onCompareClick}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M4 4l5 5" />
+              </svg>
+              Compare
+            </button>
+          </div>
 
         </header>
 
@@ -76,8 +104,8 @@ export default function AppDetailBasics({ app, onCompareClick,  onSave, isSaved,
           {/* Content Adivsory Rating */}
           <div className={styles.infoSection}>
             <span className={styles.infoLabel}>AGE</span>
-            {/*<span className={styles.infoValue}>{contentAdvisoryRating}</span>*/}
-            <span className={styles.infoValue}>4+</span>
+            <span className={styles.infoValue}>{contentAdvisoryRating}</span>
+            
           </div>
 
           <div className={styles.divider}></div>
@@ -107,15 +135,13 @@ export default function AppDetailBasics({ app, onCompareClick,  onSave, isSaved,
           {/* Version */}
           <div className={styles.infoSection}>
             <span className={styles.infoLabel}>VERSION</span>
-            <span className={styles.infoValue}>v4.17.82{version}</span>
+            <span className={styles.infoValue}>{version}</span>
           </div>
 
         </div>
 
         {/*App Description */}
 
-        
-        
       </div>
 
     </div>

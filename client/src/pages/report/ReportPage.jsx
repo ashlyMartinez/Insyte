@@ -2,12 +2,12 @@ import styles from './ReportPage.module.css'
 
 // Not sure how important the dummy data will be 
 import { appsList } from "./DummyData.js";
-import {savedApps} from './DummyData.js';
+
 
 
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { getAppDetails, getApps, saveApp } from '../../api/searchApps.js';
+import { getAppDetails, getApps, saveApp, getTrackedApps } from '../../api/searchApps.js';
 
 
 import Modal from 'react-bootstrap/Modal';
@@ -18,6 +18,8 @@ import AppAnalytics from "./AppAnalytics";
 import Graphs from "./Graphs.jsx"
 import AppReviews from "./AppReviews";
 import DummyGraphs from './DummyGraphs.jsx';    
+import ReportSkeleton from './ReportSkeleton.jsx';
+
 
 export default function ReportPage() {
     // Get appId & name from URL params 
@@ -40,48 +42,46 @@ export default function ReportPage() {
     const [showCompareModal, setShowCompareModal] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
     const [saving, setSaving] = useState(false);
-    
+    const [savedApps, setSavedApps] = useState(location.state?.savedApps || []);
+
 
     useEffect(() => {
         const fetchReport = async () => {
             try {
-
                 let currentApp = appData;
 
-                // If the appData obj is Null -> State has been lost
-                if (!currentApp && name) {
+                // 1. If the appData obj is Null -> State has been lost
+                if (!currentApp && name ) {
                     console.log("State lost, recovering app details via name")
-
-                    // Fetch apps again based on name 
                     const apps = await getApps(name);
-
-                    // From app list, find the app with the correct trackId
                     currentApp = apps.find(app => String(app.trackId) === String(appId));
-
-                    // Update the appData
                     setAppData(currentApp);
                 }
-
-                // Logic for fetching the reviews
+                
                 const fetchedReviews = await getAppDetails(appId);
                 setReviews(fetchedReviews);
 
-                // Don't automatically mark the app as saved unless the user chooses it.
-                setIsSaved(false);
+                const trackedApps = await getTrackedApps();
+                const currentApps = trackedApps.filter(app => String(app.trackId) !== String(appId));
+                setSavedApps(currentApps);
+
+                const checkIfSaved = trackedApps.some(savedApp => String(savedApp.trackId) === String(appId));
+                setIsSaved(checkIfSaved);
 
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching report data:", error);
             } finally {
                 setLoading(false);
             }
         };
+
         if (appId) {
             fetchReport();
         }
 
     }, [appId, name]);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <ReportSkeleton />;
 
     console.log("AppData in ReportPage:", appData);
     console.log(`Reviews in ReportPage:`, reviews);
@@ -100,11 +100,11 @@ export default function ReportPage() {
     return (
         <div className={styles.reportPage}>
 
-            {/* Global Naviation should be placed here */}
+            
 
             <div className={styles.reportWrapper}>
                 {/* App Header - Displays app info and compare button */}
-                {/* ___________________UPDATE THIS COMPONENT TO INCLUDE SAVE FUNCTIONALITY _____-______________________*/}
+                
                 <AppDetailBasics 
                     app={appData} 
                     onCompareClick={() => setShowCompareModal(true)} 
