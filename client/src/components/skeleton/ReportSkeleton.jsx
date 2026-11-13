@@ -6,10 +6,10 @@ const ReportSkeleton = () => {
     <Box sx={{ backgroundColor: '#f1f1f1', minHeight: '100vh', pt: 4, pb: 6 }}>
       <Container maxWidth="xl">
         
-        {/* Simulated Main Header Area */}
+        
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 5 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {/* App Icon Shape */}
+            
             <Skeleton variant="rounded" width={56} height={56} sx={{ borderRadius: '12px' }} />
             <Box>
               {/* App Title & Developer Sub lines */}
@@ -17,16 +17,16 @@ const ReportSkeleton = () => {
               <Skeleton variant="text" width={140} height={20} />
             </Box>
           </Box>
-          {/* Action Buttons Box Shape */}
+          
           <Box sx={{ display: 'flex', gap: 1.5 }}>
             <Skeleton variant="rounded" width={100} height={38} sx={{ borderRadius: '8px' }} />
             <Skeleton variant="rounded" width={110} height={38} sx={{ borderRadius: '8px' }} />
           </Box>
         </Box>
 
-        {/* Simulated Dashboard Grid Cards */}
+       
         <Grid container spacing={3}>
-          {/* Left Column - Large Main Analytics Graph Layer */}
+          
           <Grid item xs={12} md={8}>
             <Skeleton 
               variant="rounded" 
@@ -39,7 +39,7 @@ const ReportSkeleton = () => {
             />
           </Grid>
 
-          {/* Right Column - Side Panels / AI Analysis Summary Blocks */}
+          
           <Grid item xs={12} md={4}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <Skeleton variant="rounded" height={188} sx={{ borderRadius: '16px' }} />

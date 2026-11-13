@@ -6,7 +6,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import styles from './SearchPage.module.css'; 
 import { CiSearch } from "react-icons/ci";
 import SearchResultForm from './SearchResultForm.jsx';
-import {getApps}  from '../../api/searchApps.js';
+import { getApps }  from '../../api/searchApps.js';
 export default function SearchBar({onSearchSuccess}){
 
     const [appName, setAppName] = useState(""); 

@@ -52,8 +52,8 @@ Before you can run the app make sure you have installed the following: Python 3.
       ```
    2. Create and activate environment
       ```
-      python3 -m venve env
-      source env/bin/activate # Mac/Linus
+      python3 -m venv env
+      source env/bin/activate # Mac/Linux
       ```
    3. Install dependencies
       ```
@@ -76,7 +76,7 @@ Before you can run the app make sure you have installed the following: Python 3.
       ```
 2. Activate environment
       ```
-      source env/bin/activate # Mac/Linus
+      source env/bin/activate # Mac/Linux
       ```
 3. Get changes from main. 
       ```

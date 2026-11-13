@@ -1,6 +1,6 @@
 import styles from "./AppAnalytics.module.css";
 import { Container, Row, Col } from 'react-bootstrap';
-import { positiveInsights, negativeInsights } from "./DummyData";
+import { positiveInsights, negativeInsights } from "../DummyData";
 import MetricsSummaryRow from './MetricsSummaryRow';
 export const AppAnalytics = ({app}) => {
   

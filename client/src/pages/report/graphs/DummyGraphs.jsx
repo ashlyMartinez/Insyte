@@ -5,7 +5,7 @@ import styles from './Graphs.module.css';
 
 // added below imports for analytics data fetching
 import { useState, useEffect } from 'react';
-import {fetchAnalyticsData} from '../../api/reviewAnalystics.js';
+import {fetchAnalyticsData} from '../../../api/reviewAnalystics.js';
 import { CircularProgress, Alert } from '@mui/material';
 import { data } from 'react-router-dom';
 

@@ -1,24 +1,19 @@
 import styles from './ReportPage.module.css'
 
-// Not sure how important the dummy data will be 
-import { appsList } from "./DummyData.js";
-
-
-
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { getAppDetails, getApps, saveApp, getTrackedApps } from '../../api/searchApps.js';
 
 
 import Modal from 'react-bootstrap/Modal';
-import CompareModal from './CompareModal.jsx';
+import CompareModal from '../compare/CompareModal.jsx';
 
-import AppDetailBasics from "./AppDetailBasics.jsx";
-import AppAnalytics from "./AppAnalytics";
-import Graphs from "./Graphs.jsx"
-import AppReviews from "./AppReviews";
-import DummyGraphs from './DummyGraphs.jsx';    
-import ReportSkeleton from './ReportSkeleton.jsx';
+import AppDetailBasics from "./analytics/AppDetailBasics.jsx";
+import AppAnalytics from "./analytics/AppAnalytics.jsx";
+import Graphs from "./graphs/Graphs.jsx"
+import AppReviews from "./analytics/AppReviews.jsx";
+import DummyGraphs from './graphs/DummyGraphs.jsx';    
+import ReportSkeleton from '../../components/skeleton/ReportSkeleton.jsx';
 
 
 export default function ReportPage() {
@@ -103,8 +98,8 @@ export default function ReportPage() {
             
 
             <div className={styles.reportWrapper}>
+
                 {/* App Header - Displays app info and compare button */}
-                
                 <AppDetailBasics 
                     app={appData} 
                     onCompareClick={() => setShowCompareModal(true)} 

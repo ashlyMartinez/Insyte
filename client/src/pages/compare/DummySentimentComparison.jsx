@@ -9,7 +9,7 @@ const dummyCompareData = [
   { week: "Wk 2", app1Score: 3.04, app2Score: 3.62 },
   { week: "Wk 3", app1Score: 2.44, app2Score: 3.50 },
   { week: "Wk 4", app1Score: 2.71, app2Score: 3.50 },
-  { week: "Wk 5", app1Score: 3.00, app2Score: 2.10 }, // app2 drops hard here! Perfect talking point for an update failure.
+  { week: "Wk 5", app1Score: 3.00, app2Score: 2.10 }, 
   { week: "Wk 6", app1Score: 3.42, app2Score: 3.03 },
   { week: "Wk 7", app1Score: 2.60, app2Score: 3.25 },
   { week: "Wk 8", app1Score: 3.50, app2Score: 2.65 },
@@ -120,14 +120,14 @@ const SentimentComparison = ({ app1Data, app2Data }) => {
                 {
                   dataKey: 'app1Score',
                   label: app1Data?.appName || 'App 1',
-                  color: '#2196F3', // Blue
+                  color: '#2196F3',
                   curve: 'catmullRom',
                   showMark: true,
                 },
                 {
                   dataKey: 'app2Score',
                   label: app2Data?.appName || 'App 2',
-                  color: '#10b981', // Green
+                  color: '#10b981',
                   curve: 'catmullRom',
                   showMark: true,
                 },
