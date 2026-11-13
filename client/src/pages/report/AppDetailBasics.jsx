@@ -12,10 +12,7 @@ export default function AppDetailBasics({ app, onCompareClick, onSave, isSaved, 
         initialReleaseDate, currentVersionReleaseDate, description
     } = app;
 
-  const iconStyle = {
-    backgroundImage: app.iconUrl ? `url(${app.iconUrl})` : 'none',
-    backgroundColor: '#e1e4e8'
-  };
+
 
   const formatNum = (n) => {
     // Formatting numbers into K/M 
@@ -33,7 +30,7 @@ export default function AppDetailBasics({ app, onCompareClick, onSave, isSaved, 
   return (
     <div className={styles.basicDetailsWrapper}>
 
-      {/* The Navigational Back Button (Top Left) */}
+      {/* Back Button (Top Left) */}
       <button className={styles.backLink} onClick={handleReturn}>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -45,7 +42,6 @@ export default function AppDetailBasics({ app, onCompareClick, onSave, isSaved, 
       <div className={styles.appDetails}>
 
         {/* Main Header - App logo and compare button */}
-       
         <header className={styles.mainHeader}>
           <div className={styles.appIdentity}>
             <img src={iconUrl} alt={appName} className={styles.appIcon} />
@@ -58,27 +54,16 @@ export default function AppDetailBasics({ app, onCompareClick, onSave, isSaved, 
           {/* Button Group pushed cleanly to the right side via auto margin */}
           <div className={styles.buttonGroup}>
             <button
-
               className={`${styles.saveButton} ${isSaved ? styles.saveButtonActive : ''}`}
-
               onClick={onSave}
-
               disabled={saving || isSaved}
-
               >
-
               <svg width="14" height="14" viewBox="0 0 24 24" fill={isSaved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.5">
-
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
               </svg>
 
               {saving ? 'Saving...' : isSaved ? 'Saved' : 'Save App'}
-
-
             </button> 
-
-
             
             <button className={styles.compareBtn} onClick={onCompareClick}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -140,62 +125,8 @@ export default function AppDetailBasics({ app, onCompareClick, onSave, isSaved, 
 
         </div>
 
-        {/*App Description */}
-
       </div>
 
     </div>
   );
 }
-
-/*
-function AppRating({ ratingAverage, ratingsCount }) {
-  const MAX_STARS = 5;
-  
-  // Helper function to format ratings count (e.g., 1.2K, 3.4M)
-  const formatRatings = (num) => {
-    if (!num || num === "null") return "0";
-    const n = Number(num);
-    // Format numbers into K/M for better readability
-    // toFixed(1) keeps one decimal place, and replace(/\.0$/, '') removes the decimal if it's .0
-    if (n >= 1000000) {
-      return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    }
-    if (n >= 1000) {
-      return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-    }
-    return n.toString();
-  };
-
-  const filledStars = Math.round(Number(ratingAverage) || 0);
-
-  return (
-    <div className={styles.ratingsColumn}>
-      
-      <div className={styles.ratingsText}>
-        {ratingsCount && ratingsCount !== "null" 
-          ? `${formatRatings(ratingsCount)} RATINGS` 
-          : "NO RATINGS"}
-      </div>
-
-      <div className={styles.ratingGroup}>
-        <div className={styles.ratingAverage}>
-          {ratingAverage && ratingAverage !== "null" 
-            ? Number(ratingAverage).toFixed(1) 
-            : "0.0"}
-        </div>
-
-        <div className={styles.starRating}>
-          {Array.from({ length: MAX_STARS }).map((_, i) => (
-            <span
-              key={i}
-              className={i < filledStars ? styles.starFilled : styles.starEmpty}
-            >
-              ★
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}*/

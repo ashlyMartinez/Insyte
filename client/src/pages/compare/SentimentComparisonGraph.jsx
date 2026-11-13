@@ -4,87 +4,86 @@ import Skeleton from '@mui/material/Skeleton';
 import styles from './ComparePage.module.css';
 
 
-const dummyCompareData = [
-  { week: "Wk 1", app1Score: 3.25, app2Score: 3.33 },
-  { week: "Wk 2", app1Score: 3.04, app2Score: 3.62 },
-  { week: "Wk 3", app1Score: 2.44, app2Score: 3.50 },
-  { week: "Wk 4", app1Score: 2.71, app2Score: 3.50 },
-  { week: "Wk 5", app1Score: 3.00, app2Score: 2.10 }, 
-  { week: "Wk 6", app1Score: 3.42, app2Score: 3.03 },
-  { week: "Wk 7", app1Score: 2.60, app2Score: 3.25 },
-  { week: "Wk 8", app1Score: 3.50, app2Score: 2.65 },
-  { week: "Wk 9", app1Score: 2.80, app2Score: 2.70 },
-  { week: "Wk 10", app1Score: 3.38, app2Score: 2.47 },
-  { week: "Wk 11", app1Score: 3.11, app2Score: 3.38 },
-  { week: "Wk 12", app1Score: 3.19, app2Score: 3.35 }
-];
-
 // Make sure to pass app1Data and app2Data as props from your parent component!
-const SentimentComparison = ({ app1Data, app2Data }) => {
+const SentimentComparisonGraph = ({ app1Data, app2Data }) => {
   const [dataset, setDataset] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [isDemoMode, setIsDemoMode] = useState(false);
-
-  console.log("SentimentComparison received app1Data:", app1Data);
-  console.log("SentimentComparison received app2Data:", app2Data);
+  
   useEffect(() => {
     const fetchComparisonData = async () => {
       // Ensure we have both IDs before attempting to fetch
-      if (!app1Data?.trackId || !app2Data?.trackId) return;
+      const id1 = app1Data?.trackId || app1Data?.appId;
+      const id2 = app2Data?.trackId || app2Data?.appId;
 
+      if (!id1 || !id2) {
+        setLoading(false);
+        setError(true);
+        return;
+      }
       setLoading(true);
       setError(false);
 
       try {
         // Fetch both analytics endpoints at the same time
         const [res1, res2] = await Promise.all([
-          fetch(`http://localhost:8000/api/analytics/?trackId=${app1Data.trackId}`),
-          fetch(`http://localhost:8000/api/analytics/?trackId=${app2Data.trackId}`)
+          fetch(`http://localhost:8000/api/analytics/?trackId=${id1}`),
+          fetch(`http://localhost:8000/api/analytics/?trackId=${id2}`)
         ]);
 
-        const data1 = await res1.json();
-        const data2 = await res2.json();
+        if (!res1.ok || !res2.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const json1 = await res1.json();
+        const json2 = await res2.json();
+
+        const rawList1 = Array.isArray(json1) ? json1 : (json1?.data || json1?.results || []);
+        const rawList2 = Array.isArray(json2) ? json2 : (json2?.data || json2?.results || []);
 
         // If either app returns your "No reviews found" error, trigger the fallback
-        if (data1.error || data2.error) {
-          setDataset(dummyCompareData);
-          setIsDemoMode(true);
+        if (json1.error || json2.error || rawList1.length === 0 || rawList2.length === 0) {
+          setError(true);
+          setDataset([]);
+          setLoading(false);
           return;
         }
 
-        // Merge the two 12-bucket arrays into a single dataset for MUI Charts
-        // We extract the 'movingAvg' value from your backend calculation
-        const mergedData = data1.data.map((item, index) => {
-          const item2 = data2.data[index] || {};
-          return {
-            week: item.week, // Your backend sets this to 'Wk 1' or 'Day 1'
-            app1Score: item.movingAvg,
-            app2Score: item2.movingAvg || null, 
-          };
-        });
+        const maxLength = Math.max(rawList1.length, rawList2.length);
+        const mergedData = [];
+
+        for (let i = 0; i < maxLength; i++) {
+          const item1 = rawList1[i] || {};
+          const item2 = rawList2[i] || {};
+          
+          mergedData.push({
+            period: item1.week || item1.date || item1.period || `Period ${i + 1}`,
+            app1Score: item1.movingAvg ?? item1.score ?? item1.rating ?? null,
+            app2Score: item2.movingAvg ?? item2.score ?? item2.rating ?? null,
+          });
+        }
 
         setDataset(mergedData);
+
       } catch (err) {
         console.error("Error fetching comparison analytics:", err);
-        setDataset(dummyCompareData);
-        setIsDemoMode(true);
-        
+        setError(true);
+        setDataset([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchComparisonData();
   }, [app1Data, app2Data]);
-  console.log("Dataset in SentimentComparison:", dataset);
+
   return (
     <div className={styles.graphBox}>
       <div className={styles.graphInformation}>
-        <h4>THE QUALITY WAR: SENTIMENT OVER TIME</h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h4 style={{ margin: 0 }}>THE QUALITY WAR: SENTIMENT OVER TIME</h4>
+        </div>
        
         <div className={styles.graphImage} style={{ height: '400px', width: '100%' }}>
-          
           {loading ? (
             <Skeleton 
               variant="rectangular" 
@@ -93,28 +92,22 @@ const SentimentComparison = ({ app1Data, app2Data }) => {
               animation="wave" 
               sx={{ borderRadius: '10px' }} 
             />
-          ) : 
-          
-          
-          error || dataset.length === 0 ? (
+          ) : error || dataset.length === 0 ? (
             <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
               <p style={{ color: '#6c757d' }}>Not enough review data available to map comparison.</p>
             </div>
-          ) : 
-          
-         
-          (
+          ) : (
             <LineChart
               dataset={dataset}
               xAxis={[{ 
                   scaleType: 'point', 
-                  dataKey: 'week',
-                  label: 'Timeline (Last 12 Periods)' 
+                  dataKey: 'period',
+                  label: 'Timeline' 
               }]}
               yAxis={[{ 
                   min: 1, 
                   max: 5,
-                  label: 'Moving Average Rating'
+                  label: 'Average Rating'
               }]}
               series={[
                 {
@@ -123,6 +116,7 @@ const SentimentComparison = ({ app1Data, app2Data }) => {
                   color: '#2196F3',
                   curve: 'catmullRom',
                   showMark: true,
+                  valueFormatter: (value) => value == null ? 'N/A' : `${Number(value).toFixed(2)} ★`,
                 },
                 {
                   dataKey: 'app2Score',
@@ -130,6 +124,7 @@ const SentimentComparison = ({ app1Data, app2Data }) => {
                   color: '#10b981',
                   curve: 'catmullRom',
                   showMark: true,
+                  valueFormatter: (value) => value == null ? 'N/A' : `${Number(value).toFixed(2)} ★`,
                 },
               ]}
               slotProps={{
@@ -151,4 +146,4 @@ const SentimentComparison = ({ app1Data, app2Data }) => {
   );
 };
 
-export default SentimentComparison;
+export default SentimentComparisonGraph;

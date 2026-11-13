@@ -1,35 +1,20 @@
 import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { BarChart, LineChart } from '@mui/x-charts';
+import { LineChart } from '@mui/x-charts';
 import styles from './Graphs.module.css';
 
 // added below imports for analytics data fetching
 import { useState, useEffect } from 'react';
-import {fetchAnalyticsData} from '../../../api/reviewAnalystics.js';
+import {fetchAnalyticsData} from '../../../../api/reviewAnalystics.js';
 import { CircularProgress, Alert } from '@mui/material';
-import { data } from 'react-router-dom';
 
-const dummySingleData = [
-  { week: "Wk 1", reviews: 20, threshold: 26.2, movingAvg: 3.25, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 2", reviews: 27, threshold: 26.2, movingAvg: 3.04, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 3", reviews: 16, threshold: 26.2, movingAvg: 2.44, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 4", reviews: 17, threshold: 26.2, movingAvg: 2.71, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 5", reviews: 19, threshold: 26.2, movingAvg: 3.00, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 6", reviews: 12, threshold: 26.2, movingAvg: 3.42, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 7", reviews: 15, threshold: 26.2, movingAvg: 2.60, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 8", reviews: 12, threshold: 26.2, movingAvg: 3.50, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 9", reviews: 20, threshold: 26.2, movingAvg: 2.80, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 10", reviews: 13, threshold: 26.2, movingAvg: 3.38, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 11", reviews: 18, threshold: 26.2, movingAvg: 3.11, overallAvg: 3.07, versionFragility: false, isDaily: false },
-  { week: "Wk 12", reviews: 21, threshold: 26.2, movingAvg: 3.19, overallAvg: 3.07, versionFragility: false, isDaily: false }
-];
 
-function DummyGraphs({trackId}){
+
+function Graphs({trackId}){
   
   const [dataset, setDataset] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isDemoMode, setIsDemoMode] = useState(false);
 
   
   useEffect(() => {
@@ -38,18 +23,23 @@ function DummyGraphs({trackId}){
       setError(null); 
       try {
         const data = await fetchAnalyticsData(trackId); 
-        setDataset(data);
+        setDataset(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error loading analytics:", err);
-        setDataset(dummySingleData);
-        setIsDemoMode(true);
-
+        setError("Failed to load analytics data from server.");
+        setDataset([]);
+      
       } finally {
         setIsLoading(false); 
       }
     };
 
-    loadAnalytics(); 
+    if (trackId) {
+      loadAnalytics(); 
+    } else {
+      setIsLoading(false);
+      setDataset([]);
+    }
 
   }, [trackId]); 
   console.log("Dataset in DummyGraphs:", dataset);
@@ -88,8 +78,6 @@ function DummyGraphs({trackId}){
                     justifyContent: 'center',
                     color: '#6c757d',
                     fontFamily: "'Inter', sans-serif",
-                    
-                    borderRadius: '12px'
                   }}>
                     <p>Not enough historical data to chart breakout velocity.</p>
                   </div>
@@ -166,4 +154,4 @@ function DummyGraphs({trackId}){
   );
 };
 
-export default DummyGraphs;
+export default Graphs;

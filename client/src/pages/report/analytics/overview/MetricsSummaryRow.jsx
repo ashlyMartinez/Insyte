@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import styles from './AppAnalytics.module.css';
 
 
@@ -7,6 +7,7 @@ import styles from './AppAnalytics.module.css';
 export default function DummyMetricsSummaryRow({appMetrics}){
     return (
         <Row className="g-3 mb-4">
+
             {/* Metric 1: Monthly Installs */}
             <Col md={4}>
                 <div className={styles.statCard}>

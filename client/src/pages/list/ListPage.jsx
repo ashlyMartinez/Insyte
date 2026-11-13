@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getTrackedApps } from '../../api/searchApps.js'
 import styles from './ListPage.module.css'
-import { savedApps } from '../report/DummyData.js'
+
 
 const ListPage = () => {
     const navigate = useNavigate()

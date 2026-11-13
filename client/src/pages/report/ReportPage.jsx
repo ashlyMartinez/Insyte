@@ -5,14 +5,16 @@ import { useParams, useLocation } from 'react-router-dom';
 import { getAppDetails, getApps, saveApp, getTrackedApps } from '../../api/searchApps.js';
 
 
-import Modal from 'react-bootstrap/Modal';
 import CompareModal from '../compare/CompareModal.jsx';
 
-import AppDetailBasics from "./analytics/AppDetailBasics.jsx";
-import AppAnalytics from "./analytics/AppAnalytics.jsx";
-import Graphs from "./graphs/Graphs.jsx"
-import AppReviews from "./analytics/AppReviews.jsx";
-import DummyGraphs from './graphs/DummyGraphs.jsx';    
+import AppDetailBasics from "./AppDetailBasics.jsx";
+import AppAnalytics from "./analytics/overview/AppAnalytics.jsx";
+
+
+import AppReviews from "./analytics/reviews/AppReviews.jsx";
+
+import Graphs from './analytics/graphs/Graphs.jsx';    
+
 import ReportSkeleton from '../../components/skeleton/ReportSkeleton.jsx';
 
 
@@ -78,10 +80,6 @@ export default function ReportPage() {
 
     if (loading) return <ReportSkeleton />;
 
-    console.log("AppData in ReportPage:", appData);
-    console.log(`Reviews in ReportPage:`, reviews);
-    console.log("Rendering DummyGraphs with trackId:", appData?.trackId);
-
     const handleSaveApp = async () => {
         if (!appData || saving || isSaved) return;
         setSaving(true);
@@ -94,8 +92,6 @@ export default function ReportPage() {
 
     return (
         <div className={styles.reportPage}>
-
-            
 
             <div className={styles.reportWrapper}>
 
@@ -114,7 +110,7 @@ export default function ReportPage() {
                         className={activeTab === 'overview' ? styles.activeTab : styles.tab} 
                         onClick={() => setActiveTab('overview')}
                     >
-                        Overview & AI
+                        Overview
                     </button>
 
                     <button 
@@ -136,7 +132,7 @@ export default function ReportPage() {
                 <main className={styles.contentArea}>
                     {activeTab === 'overview' && <AppAnalytics app={appData} />}
 
-                    {activeTab === 'analytics' && <DummyGraphs trackId={appData.trackId}/>}
+                    {activeTab === 'analytics' && <Graphs trackId={appData.trackId}/>}
 
                     {activeTab === 'reviews' && <AppReviews appReviews={reviews} />}
                 </main>

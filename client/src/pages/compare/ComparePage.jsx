@@ -1,23 +1,9 @@
 import styles from './ComparePage.module.css';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import DummySentimentGraph from './DummySentimentComparison.jsx'
-
-const microsoftOnefeatures = [
-     "Pinned Note Lists", 
-     "Mobile Ribbon Menu", 
-     "Inline Media Rendering"
-    
-  ]
+import SentimentComparisonGraph from './SentimentComparisonGraph.jsx'
 
 
-const notionFeatures = [
-    "Customizable Data Export",
-    "Dynamic Text Scaling",
-    "In-App Onboarding Tutorial",
-
-    "Enhanced Drag-and-Drop"
-]
 const ComparePage = () => {
     
     const location = useLocation();
@@ -26,8 +12,8 @@ const ComparePage = () => {
     // 1. Destructure the data from location.state
     // We use optional chaining and a fallback to handle direct URL entries
 
-    const [app1Data, setAppData1] = useState(location.state?.app1Data || null);
-    const [app2Data, setAppData2] = useState(location.state?.app2Data || null);
+    const [app1Data] = useState(location.state?.app1Data || null);
+    const [app2Data] = useState(location.state?.app2Data || null);
    
 
     
@@ -46,47 +32,21 @@ const ComparePage = () => {
 
     }
     
-      const formatNum = (n) => {
-    // Formatting numbers into K/M 
-    if (n === undefined || n === null || isNaN(n)) return ''; 
-  
-    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-    if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
-    return n.toString(); 
-  };
-
-
-    // 2. Fallback logic
-    // If someone refreshes the page or types the URL manually, 
-    // location.state will be null. In that case, you fall back to your search logic.
-    // useEffect(() => {
-    //     if (!app1Data || !app2Data) {
-    //         const params = new URLSearchParams(location.search);
-    //         const id1 = params.get('app1');
-    //         const id2 = params.get('app2');
-            
-    //         // Search your dummy data file here as a backup...
-    //     }
-    //     setAppData1({...app1Data, 
-    //     reviewVelocity: "~800 reviews/mo", 
-    //     velocityTrend: "+8%", // Steady growth in smart home adoption
-    //     lastUpdated: "4 days ago", // Signal: Extremely active dev team
-    //     shipFrequency: "Every 14-18 days", // Avg from recent version history
-        
-    //     // --- Quality Metrics ---
-    //     averageRating: 4.8,
-    //     ratingCount: 194000, 
-    //     latestVersionRating: 4.7, // No "Churn Risk" here; stability is high
-        
-    //     // --- LLM Insight Logic ---
-    //     requestedFeatures: "Portrait mode for iPad, Widget stability, Apple HomeKit reliability",
-    //     marketMoat: "High (194K reviews vs industry avg < 50K)"
-    //     })
-    // }, [location, app2Data]);
-    // console.log(app1Data, app2Data)
+    const formatNum = (n) => {
+        // Formatting numbers into K/M 
+        if (n === undefined || n === null || isNaN(n)) return ''; 
+    
+        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+        if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+        return n.toString(); 
+    };
 
     const handleReturn = ()=>{
-        navigate(`/report/${app1Data.appId}/${app1Data.appName}`, { state: { appData: app1Data } })
+        if (app1Data) {
+            navigate(`/report/${app1Data.appId}/${app1Data.appName}`, { state: { appData: app1Data } });
+        } else {
+            navigate(-1);
+        }
     }
     
     
@@ -105,85 +65,57 @@ const ComparePage = () => {
                 <header className={styles.stickyHeader}>
                     <div className={styles.appIdentity} style={{ justifyContent: 'flex-end' }}>
                         <span style={{ fontWeight: 700 }}>{app1Data.appName}</span>
-                        <img src={app1Data.iconUrl} alt={app1Data.appName} className={styles.appIcon} />
+                        <img src={app1Data.iconUrl} alt={app1Data?.appName} className={styles.appIcon} />
                     </div>
 
                     <div className={styles.vsCircle}>VS</div>
 
                     <div className={styles.appIdentity}>
                         <img src={app2Data.iconUrl} alt={app2Data.appName} className={styles.appIcon} />
-                        <span style={{ fontWeight: 700 }}>{app2Data.appName}</span>
+                        <span style={{ fontWeight: 700 }}>{app2Data?.appName}</span>
                     </div>
                 </header>
 
                 <main className={styles.contentArea}>
-                    {/* Review Velocity */}
-                    {/*<div className={styles.metricRow}>
-                        <div className={`${styles.metricValue} ${styles.winner}`} style={{ textAlign: 'right' }}>
-                            {app1Data.reviewVelocity} <small>({app1Data.velocityTrend})</small>
-                        </div>
-                        <div className={styles.metricLabel}>Review Velocity</div>
-                        <div className={styles.metricValue} style={{ textAlign: 'left' }}>
-                            {app2Data.reviewVelocity} <small>({app2Data.velocityTrend})</small>
-                        </div>
-                    </div>*/}
-
                     {/* Market Moat */}
                     <div className={styles.metricRow}>
                         <div className={`${styles.metricValue} ${styles.winner}`} style={{ textAlign: 'right' }}>
-                            {formatNum(app1Data.ratingCount)}
+                            {formatNum(app1Data?.ratingCount)}
                         </div>
                         <div className={styles.metricLabel}>Review Count</div>
                         <div className={styles.metricValue} style={{ textAlign: 'left' }}>
-                            {formatNum(app2Data.ratingCount)}
+                            {formatNum(app2Data?.ratingCount)}
                         </div>
                     </div>
 
                     {/* Update Frequency */}
                     <div className={styles.metricRow}>
                         <div className={styles.metricValue} style={{ textAlign: 'right' }}>
-                            {lastUpdatedDate(app1Data.currentVersionReleaseDate)} <br/>
-                           
+                            {lastUpdatedDate(app1Data?.currentVersionReleaseDate)} <br/>
                         </div>
 
                         <div className={styles.metricLabel}>Ship Frequency</div>
 
                         <div className={styles.metricValue} style={{ textAlign: 'left' }}>
-                            {lastUpdatedDate(app2Data.currentVersionReleaseDate)} <br/>
-                       
+                            {lastUpdatedDate(app2Data?.currentVersionReleaseDate)} <br/>
                         </div>
                     </div>
 
                     {/* Version Churn Risk */}
                     <div className={styles.metricRow}>
                         <div className={styles.metricValue} style={{ textAlign: 'right' }}>
-                            All-Time: {app1Data.averageRating.toFixed(2)}★ <br/>
+                            All-Time: {app1Data?.averageRating?.toFixed(2)}★ <br/>
                             Current: {app1Data?.currentVersionRating?.toFixed(2)}★
                         </div>
                         <div className={styles.metricLabel}>Quality War</div>
                         <div className={styles.metricValue} style={{ textAlign: 'left' }}>
-                            All-Time: {app2Data.averageRating.toFixed(2)}★ <br/>
-                            <span className={styles.warning}>Current: {app2Data.currentVersionRating?.toFixed(2)}★</span>
+                            All-Time: {app2Data?.averageRating?.toFixed(2)}★ <br/>
+                            <span className={styles.warning}>Current: {app2Data?.currentVersionRating?.toFixed(2)}★</span>
                         </div>
                     </div>
 
-                    {/* Feature Gap Analysis */}
-                    <div className={styles.featureGapBox}>
-                        <h6 style={{ fontWeight: 700, marginBottom: '1rem', textAlign: 'center' }}>
-                            LLM Feature Gap Analysis
-                        </h6>
-                        <div className="row">
-                            <div className="col-6 border-end">
-                                <p className="small text-muted mb-1">Highly Requested for {app1Data.appName}:</p>
-                                <strong>{microsoftOnefeatures.join(', ')}</strong>
-                            </div>
-                            <div className="col-6 ps-4">
-                                <p className="small text-muted mb-1">Highly Requested for {app2Data.appName}:</p>
-                                <strong>{notionFeatures.join(', ')}</strong>
-                            </div>
-                        </div>
-                    </div>
-                    <DummySentimentGraph app1Data={app1Data} app2Data={app2Data} />
+                
+                    <SentimentComparisonGraph app1Data={app1Data} app2Data={app2Data} />
 
                 </main>
             </div>
