@@ -1,11 +1,10 @@
 
 .searchPage {
   max-width: 100%;
+  
   max-height: fit-content;
-  animation: fade-in 3s;
-
-  font-family: 'Inter', system-ui, sans-serif; /* Matches Report Page */
-  animation: fade-in 1.5s ease; /* Sped up slightly for a snappier feel */
+  font-family: 'Inter', system-ui, sans-serif; 
+  animation: fade-in 1.5s ease; 
 }
 
 .PageTitle {
@@ -94,63 +93,55 @@
 }
 
 
+/* Results from user Search */
 .searchResults {
+  width: 100%;
+  max-width: 45rem;
+  padding: 1rem;
+  margin: 1rem auto;
+  gap: .85rem;
+  display: flex; 
+  flex-direction: column;
 
-  padding: 0px 60px;
-  margin-top: 2rem;
-
-}
-
-.resultsColumn {
-  display: flex;
-  justify-content: center;
-}
-
-.resultsColumn {
-  display: flex;
-  justify-content: center;
+  box-sizing: border-box;  
 }
 
 .listCard {
-  max-width: 100%;
-  width: 45rem;
-  border-radius: .4rem;
-  background: #ffffff;
-  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 5px;
+
   border-radius: 1rem;
-  padding: 4px 8px;
-  cursor: pointer;
+  border: 1px solid #8e8f8f;
+  
   transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1); 
-  margin-bottom: 5px; 
+  
+  
+  cursor: pointer;
+  
+ 
 }
 
 .listCard:hover {
-  border-color: #5188ff !important;
-  
-  box-shadow: 0 10px 20px rgba(79, 172, 254, 0.1) !important;
+  border-color: #5188ff;
+  box-shadow: 0 10px 20px rgba(79, 172, 254, 0.1);
   background: rgba(79, 172, 254, 0.02);
-    
-  
   transform: translateY(-2px);
 }
 
-.cardGroup {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-}
-
 .iconGroup {
-
-  width:54px;
-  height:54px;
+  width: 52px;
+  height: 52px;
   flex-shrink:0;
-
 }
 
 .appIcon {
   display: block;
-  border-radius: .55rem;
+  border-radius: 10px;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -160,20 +151,32 @@
 .textGroup {
   display: flex;
   flex-direction: column;
-  padding-left: .5rem;
   justify-content: center;
+  flex-grow: 1;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  min-width: 0;
 }
 
 .actionGroup {
-  margin-left: auto;
-  padding-left: .3rem;
+  flex-shrink: 0;
 }
 
 .appName {
   font-weight: 600;
   font-size: 1.1rem;
-  color: #1a1a1a;
-  margin-bottom: 2px;
+  color: #212529;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.developerName {
+  font-size: 0.975rem;
+  color: #6c757d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .companyName {
@@ -182,30 +185,32 @@
 }
 
 .plusButton {
-  background: none;
-  border: 1px solid #696969;
-  border-radius: 1rem;
   width: 32px;
   height: 32px;
+  border-radius: 50%;
+  border: 1px solid #ced4da;
+  background-color: #f8f9fa;
+  font-size: 1.1rem;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #000000;
-  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
 
 }
 
 .plusButton:hover {
-  background-color: #000000;
-  color: white;
-  border-color: #000000;
-  transform: scale(1.05);
+  background-color: #212529;
+  color: #ffffff;
+  border-color: #212529;
 }
 
 .plusButtonSaved {
   background-color: #2563eb;
   border-color: #2563eb;
   color: #ffffff;
+  
 }
 
 .plusButton:disabled {
