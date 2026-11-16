@@ -30,21 +30,37 @@ const ListPage = () => {
         loadTrackedApps()
     }, [])
 
-    const toggleSelectApp = (trackId) => {
-        setSelectedApps((prev) =>
-            prev.includes(trackId)
-                ? prev.filter((id) => id !== trackId)
-                : [...prev, trackId]
-        )
-    }
-
     const handleCardClick = (app) => {
-        if (compareMode) {
-            toggleSelectApp(app.trackId)
-            return
-        }
+       if(compareMode){
+            const isAlreadySelected = selectedApps.includes(app.trackId);
+            
+            /* Unselect card logic */
+            if(isAlreadySelected){
+                setSelectedApps((prev) => prev.filter((id) => id !== app.trackId))
+                return;
+            }
+            
+            const updatedSelection = [...selectedApps, app.trackId];
+            setSelectedApps(updatedSelection);
 
-        
+            /* Two cards selected --> navigate to Compare Page*/
+            if(updatedSelection.length == 2){
+                const [app1Id, app2Id] = updatedSelection; 
+                const app1 = apps.find((item) => item.trackId === app1Id);
+                const app2 = apps.find((item) => item.trackId === app2Id);
+
+                navigate(`/compare?app1=${app1Id}&app2=${app2Id}`, {
+                    state: {
+                        app1Data: app1,
+                        app2Data: app2,
+                        fromSavedPage: true,
+                    },
+                });
+            }
+        return;
+       }
+
+
         const currentApps = apps.filter(trackedApp => String(trackedApp.trackId) !== String(app.trackId));
         console.log("-------------Current apps in list page", app)
         navigate(`/report/${app.trackId}/${encodeURIComponent(app.appName)}`, {
@@ -53,8 +69,8 @@ const ListPage = () => {
     }
 
     const handleExitCompare = () => {
-        setCompareMode(false)
-        setSelectedApps([])
+        setCompareMode((prev) => !prev);
+        setSelectedApps([]);
     }
 
     return (

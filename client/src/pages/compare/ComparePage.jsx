@@ -15,6 +15,7 @@ const ComparePage = () => {
     const [app1Data] = useState(location.state?.app1Data || null);
     const [app2Data] = useState(location.state?.app2Data || null);
    
+    
 
     
     const lastUpdatedDate = (date)=>{
@@ -54,13 +55,13 @@ const ComparePage = () => {
     return (
         <div className={styles.reportPage}>
             <div className={styles.reportWrapper}>
-                {/* The Navigational Back Button (Top Left) */}
-                      <button className={styles.backLink} onClick={handleReturn}>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7" />
-                        </svg>
-                        Back to Report
-                     </button>
+                {/* Back Button */}
+                    <button className={styles.backLink} onClick={handleReturn}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    Back to Report
+                    </button>
                 
                 <header className={styles.stickyHeader}>
                     <div className={styles.appIdentity} style={{ justifyContent: 'flex-end' }}>

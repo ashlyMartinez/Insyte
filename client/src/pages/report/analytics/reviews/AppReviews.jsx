@@ -106,7 +106,7 @@ export default function AppReviews({ appReviews }) {
         })}
       </div>
 
-      {/* LOAD MORE BUTTON */}
+      
       {hasMore && (
         <div className={styles.loadMoreContainer}>
           <button className={styles.loadMoreBtn} onClick={handleLoadMore}>
